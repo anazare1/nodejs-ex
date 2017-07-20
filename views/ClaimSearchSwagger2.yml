@@ -1,0 +1,473 @@
+swagger: '2.0'
+info:
+  version: '0.1'
+  title: OptumRx API
+basePath: /optumrx/v0.1  
+paths:
+  /claimsearch:
+   get:
+    description: |
+        # `Claim Search` objects.
+        # Optional query param of **size** determines
+        # size of returned array
+    parameters:
+      -
+        name: consumingApp
+        in: header
+        description: Identifier for application consuming the API
+        required: false
+        type: string
+      -
+        name: clientId
+        in: header
+        description: Identifier of client using the consumingApp
+        required: false
+        type: string
+      -
+        name: correlationId
+        in: header
+        description: Unique identifier for the transaction
+        required: false
+        type: string           
+      - 
+        #routinginfo in 'in' parameter was changed to header
+        name: applicationName
+        in: header
+        description: Routing service application name
+        required: true
+        type: string
+      -
+        #routingInfo was changed to header
+        name: wsEndPointURLSuffix
+        in: header
+        description: End point url
+        required: true
+        type: string
+      -
+        #routingInfo was changed to header
+        name: interfaceName
+        in: header
+        description: Interface name
+        required: true
+        type: string
+      -
+        #routingInfo was changed to header
+        name: interfaceType
+        in: header
+        description: Interface type
+        required: true
+        type: string
+      - 
+        #routingInfo was changed to header
+        name: userId
+        in: header 
+        description: The user of the consumer application making the request to this ESB service
+        required: true 
+        type: string
+      -
+        name: carrierId
+        in: query
+        description: Member's carrier id 
+        required: false
+        type: string
+# The input parameter carrierId can not be longer than 9
+      -
+        name: accountId
+        in: query
+        description: Member's account id
+        required: false
+        type: string
+# The input parameter accountId can not be longer than 15
+      -
+        name: groupId
+        in: query
+        description: Member's group id
+        required: false
+        type: string
+# The input parameter groupId can not be longer than 15
+      -
+        name: memberId
+        in: query
+        description: Member's id
+        required: false
+        type: string
+# The input parameter memberId can not be longer than 18
+      - 
+        name: memberIdOperator
+        in: query 
+        description:  Indicates whether to search for all members whose MemberID matches the submitted MemberID exactly or simply starts with the submitted MemberID (E – exact match, S – starts with comparison) 
+        required: false
+        type: string 
+      -
+        name: pharmacyIdQualifier
+        in: query 
+        description: |
+                     The type of identifier provided in the pharmacyId element possible values, maxlen=2
+                     01 – NPI
+                     07 – NCPDP/NABP
+        required: false
+        type: string 
+      - 
+        name: pharmacyId
+        in: query 
+        description: The identifier for the pharmacy, maxlen=20 
+        required:  false 
+        type: string  
+      - 
+        name: rxNumber 
+        in: query 
+        description: Claim general information RxNumber
+        required: false 
+        type: string 
+      - 
+        name: rxClaimNumber
+        in: query 
+        description: Claim general information RxNumberQualifier 
+        required: false 
+        type: string 
+      -
+        name: fillDateFrom 
+        in: query
+        description: Date the prescription is filled (YYYYMMDD) 
+        required: false
+        type: string  
+      - 
+        name: fillDateThru 
+        in: query 
+        description: Date the prescription is filled through (YYYYMMDD)
+        required: false
+        type: string    
+      - 
+        name: includeTrialClaims 
+        in: query 
+        description: Indicator whether or not to include trial claims
+        required: false
+        type: string 
+      - 
+        name: carrierList 
+        in: query 
+        description: Identifier for the Carrier List requested (Only one list can be submitted) 
+        required: false 
+        type: string 
+      - 
+        name: accountList 
+        in: query 
+        description: identifier for the Account List requested 
+        required: false 
+        type: string 
+      - 
+        name: groupList 
+        in: query 
+        description: Identifier for the Group List requested
+        required: false 
+        type: string 
+      - 
+        name: incExcListInd 
+        in: query 
+        description: Indicates how the requested list will be used (E – indicates that entities on the list are excluded from the claim search, I – indicates that entities on the list are included in the claim search, R – indicates that the entities submitted in the request are compared to the list and whether the submitted entities are included or excluded on the lists is indicated in the response)
+        required: false 
+        type: string 
+      - 
+        name: maximumResultSetInd
+        in: query 
+        description: Indicates whether to enforce a maximum result set size or not 
+        required: true 
+        type: boolean 
+      - 
+        name: maximumResultSet 
+        in: query 
+        description: The maximum number of results to be returned
+        required: true 
+        type: integer 
+      -
+        name: additionalFields
+        in: query
+        description: Elements that are added to schema as part of enhancements where adding such elements separately as new elements in the schema is not desired
+        required: false 
+        type: array
+        items:
+          type: string
+        collectionFormat: csv
+        #               name: fieldDescription
+        #     in: additionalFields
+        #      description: Identifier of an additional field used to reference it
+        #      required: true
+        #      type: string
+        #-
+        #      name: fieldStringValue
+        #      in: additionalFields
+        #      description: Populated with a value if the additional field is of type string
+        #      required: false
+        #      type: string
+        #-
+        #      name: fieldDecimalValue
+        #      in: additionalFields
+        #      description: Populated with a value if the additional field is of type decimal
+        #      required: false
+        #      type: double
+        #-
+        #      name: fieldIntegerValue
+        #      in: additionalFields
+        #      description: Populated with a value if the additional field is of type integer
+        #      required: false
+        #      type: integer
+
+            
+    responses:
+        # Response code
+        '200':
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Claim Search 
+            type: array
+            items:
+             type: object
+             properties:
+                maxRowExceededInd: 
+                  type: boolean
+                  #changed from bigDecimal to number
+                uniqueClaimId: 
+                  type: number 
+                claimSequenceNumber: 
+                  type: integer 
+                carrierId:
+                  type: string
+                accountId:
+                  type: string
+                groupId:
+                  type: string
+                memberId:
+                  type: string
+                submittedMemberFirstName: 
+                  type: string 
+                submittedMemberLastName: 
+                  type: string 
+                claimStatus: 
+                  type: string 
+                claimOriginationFlag: 
+                  type: string 
+                rxNumber: 
+                  type: string 
+                claimFillDate: 
+                  type: string 
+                prescriptionDate:   
+                  type: string 
+                submittedDate: 
+                  type: string 
+                productIdQualifier: 
+                  type: string 
+                productId: 
+                  type: string
+                productNameAbbrev: 
+                  type: string 
+                productNameExt: 
+                  type: string 
+                prescriberIdQualifier: 
+                  type: string 
+                prescriberId: 
+                  type: string 
+                prescriberState: 
+                  type: string 
+                prescriberLastName: 
+                  type: string 
+                pharmacyName: 
+                  type: string 
+                daysSupply: 
+                  type: integer
+                dispensedQuantity:
+                #changed from bigDecimal to number
+                  type: number 
+                patientPayAmount:
+                #changed from bigDecimal to number
+                  type: number
+                planPayAmount:
+                #changed from bigDecimal to number
+                  type: number
+                planId:
+                  type: string 
+                planEffectiveDate: 
+                  type: string 
+                salesTax: 
+                #changed from bigDecimal to number
+                  type: number
+                totalPaidAmount:
+                #changed from bigDecimal to number
+                  type: number
+                productSelectionAmount:
+                #changed from bigDecimal to number
+                  type: number
+                deductibleAmount:
+                #changed from bigDecimal to number
+                  type: number
+                exceedMaximumAmount:
+                #changed from bigDecimal to number
+                  type: number
+                copayPaidAmount:
+                #changed from bigDecimal to number
+                  type: number
+                priorAuthReasonCode: 
+                  type: string
+                priorAuthNumber: 
+                  type: string
+                rejectCode: 
+                  type: string 
+                rejectMessage: 
+                  type: array
+                  items: 
+                    type: object
+                    properties:
+                      message: 
+                        type: string 
+                      additionalMessage: 
+                        type: string 
+                      localMessageCode: 
+                        type: string 
+                      additionalFields: 
+                        type: array 
+                        items: 
+                           type: object
+                           properties:
+                             fieldDescription:
+                               type: string
+                             fieldStringValue: 
+                               type: string 
+                             fieldDecimalValue:
+                               default: 0 
+                               #changed from bigDecimal to number
+                               type: number
+                             fieldIntegerValue:
+                               default: 0                             
+                               type: integer
+                actualLastName: 
+                  type: string 
+                actualFirstName: 
+                  type: string 
+                actualDateOfBirth: 
+                  type: string
+                auditStamp: 
+                  type: object 
+                  properties:
+                    addUser:
+                      type: string
+                    addDate:
+                      type: string
+                    addTime:  
+                      type: string
+                    changeUser:
+                      type: string
+                    changeDate:
+                      type: string                  
+                    changeTime:
+                      type: string
+                sbmRefillNumber: 
+                  type: string 
+                refillsAuthorized: 
+                  type: integer 
+                listRefInd: 
+                  type: string 
+                gpi: 
+                  type: string 
+                rspPatientPayAmount: 
+                #changed from bigDecimal to number
+                  type: number
+                paidWithWaiver: 
+                  type: string 
+                paidWithFacts: 
+                  type: string 
+                autoPayRejection: 
+                  type: string
+                nonPreferredBrand: 
+                  type: string 
+                gracePeriod: 
+                  type: string 
+                contingentTherapy: 
+                  type: string 
+                quantityLimits: 
+                  type: string 
+                homeDelivery: 
+                  type: string 
+                clientError: 
+                  type: array
+                  items: 
+                    type: object
+                    properties:
+                      internalSeq: 
+                        type: integer 
+                      errorCode: 
+                        type: string 
+                      rxClaimErrorCode: 
+                        type: string 
+                      additionalFields:
+                        type: array
+                        items: 
+                          type: object
+                          properties:
+                            fieldDescription:
+                              type: string
+                            fieldStringValue:
+                              type: string
+                            fieldDecimalValue:
+                              default: 0 
+                              #changed from bigDecimal to number
+                              type: number
+                            fieldIntegerValue: 
+                              default: 0 
+                              type: integer                     
+                additionalFields:
+                  type: array
+                  items: 
+                    type: object
+                    properties:
+                      fieldDescription:
+                        type: string
+                      fieldStringValue:
+                        type: string
+                      fieldDecimalValue: 
+                        default: 0 
+                        #changed from bigDecimal to number
+                        type: number
+                      fieldIntegerValue:
+                        default: 0 
+                        type: integer 
+                ahfsCd: 
+                  type: string 
+                ncpdpPharmacyId: 
+                  type: string  
+                npiPharmacyId:
+                  type: string
+                pceServiceCalled: 
+                  type: string 
+
+
+        '400':
+          description: Bad Request / Validation Error
+          schema:
+            title: Error
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            title: Error
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+        '404':
+          description: Not Found
+          schema:
+            title: Error
+            type: object
+            properties:
+              code:
+                type: integer
+              message:
+                type: string                           
