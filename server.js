@@ -69,15 +69,15 @@ app.get('/', function (req, res) {
     // Create a document with request IP and current time of request
     col.insert({ip: req.ip, date: Date.now()});
     col.count(function(err, count){
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
+      res.render('index2.html', { pageCountMessage : count, dbInfo: dbDetails });
     });
   } else {
-    res.render('index.html', { pageCountMessage : null});
+    res.render('index2.html', { pageCountMessage : null});
   }
 });
 
 
-app.get('/index2', function (req, res) {
+app.get('/index2.html', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
   if (!db) {
@@ -96,7 +96,7 @@ app.get('/index2', function (req, res) {
 });
 
 //display ClaimSearchSwagger yaml
-app.get('/ClaimSearchSwagger2', function (req, res) {
+app.get('/ClaimSearchSwagger2.yml', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
   if (!db) {
